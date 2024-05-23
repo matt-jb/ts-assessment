@@ -129,13 +129,15 @@ export const validateOutput = async (output: Output) => {
 
   const result = Yup.object()
     .shape({
-      documents: Yup.array().of(
-        Yup.object().shape({
-          id: Yup.string(),
-          entities: Yup.array().of(entity),
-          annotations: Yup.array().of(annotation),
-        }),
-      ),
+      documents: Yup.array()
+        .of(
+          Yup.object().shape({
+            id: Yup.string().required(),
+            entities: Yup.array().of(entity).required(),
+            annotations: Yup.array().of(annotation).required(),
+          }),
+        )
+        .required(),
     })
     .noUnknown('Unknown output property');
 
