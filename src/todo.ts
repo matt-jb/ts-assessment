@@ -1,6 +1,7 @@
-import { Annotation, Entity, Input } from './types/input';
+import { Annotation, Entity, EntityClass, EntityType, Input } from './types/input';
 import { ConvertedAnnotation, ConvertedEntity, Output } from './types/output';
 import { findAnnotationIndex, sortInAsc } from './helpers';
+import * as Yup from 'yup';
 
 // TODO: Convert Input to the Output structure. Do this in an efficient and generic way.
 // HINT: Make use of the helper library "lodash"
@@ -90,4 +91,53 @@ const sortEntities = (entityA: ConvertedEntity, entityB: ConvertedEntity) =>
 const sortAnnotations = (annotationA: ConvertedAnnotation, annotationB: ConvertedAnnotation) =>
   sortInAsc(annotationA.index, annotationB.index);
 
-// BONUS: Create validation function that validates the result of "convertInput". Use yup as library to validate your result.
+// BONUS: Create validation function that validates the result of "convertInput". Use Yup as library to validate your result.
+// Matt: haven't used Yup in ages, but it wasn't hard to pick up again. Nowadays, my go-to in these sort of scenarios is zod.
+export const validateOutput = async (output: Output) => {
+  const annotation: Yup.ObjectSchema<ConvertedAnnotation> = Yup.object()
+    .shape({
+      // Matt: one might want to validate the MongoDB ObjectId here.
+      // That depends on the type of seeding data, test/stage environment, and ci/cd pipeline, I guess.
+      // Would require writing some custom Yup validation, though. And here's where zod shines, as it'd be easier to add that validation.
+      // But, I admit, in most scenarios this level of attention to detail isn't needed.
+      id: Yup.string().required(),
+      entity: Yup.object()
+        .shape({
+          id: Yup.string().required(),
+          name: Yup.string().required(),
+        })
+        .required(),
+      children: Yup.array()
+        .of(Yup.lazy(() => annotation))
+        .required(),
+      value: Yup.mixed<string | number>().required().nullable(),
+      index: Yup.number().required(),
+    })
+    .noUnknown('Unknown annotation property');
+
+  const entity: Yup.ObjectSchema<ConvertedEntity> = Yup.object()
+    .shape({
+      id: Yup.string().required(),
+      name: Yup.string().required(),
+      children: Yup.array()
+        .of(Yup.lazy(() => entity))
+        .required(),
+      type: Yup.string<EntityType>().required(),
+      class: Yup.string<EntityClass>().required(),
+    })
+    .noUnknown('Unknown entity property');
+
+  const result = Yup.object()
+    .shape({
+      documents: Yup.array().of(
+        Yup.object().shape({
+          id: Yup.string(),
+          entities: Yup.array().of(entity),
+          annotations: Yup.array().of(annotation),
+        }),
+      ),
+    })
+    .noUnknown('Unknown output property');
+
+  return await result.isValid(output, { strict: true });
+};
