@@ -1,32 +1,31 @@
 {
-    "name": "ts-assessment",
-    "version": "1.0.0",
-    "main": "dist/index.js",
-    "scripts": {
-        "test": "mocha --config .mocharc.yaml"
-    },
-    "engines": {
-        "npm": ">=9.8.1",
-        "node": ">=18.18.2"
-    },
-    "devDependencies": {
-        "@types/chai": "^4.3.11",
-        "@types/lodash": "^4.14.202",
-        "@types/mocha": "^10.0.6",
-        "@types/node": "^14.14.37",
-        "@typescript-eslint/eslint-plugin": "^6.19.0",
-        "@typescript-eslint/parser": "^6.19.0",
-        "chai": "^4.3.4",
-        "eslint": "^8.56.0",
-        "eslint-config-prettier": "^9.1.0",
-        "eslint-plugin-prettier": "^5.1.3",
-        "mocha": "^10.2.0",
-        "prettier": "^3.2.4",
-        "ts-node": "^10.9.2",
-        "typescript": "^5.3.3"
-    },
-    "dependencies": {
-        "lodash": "^4.17.21",
-        "yup": "^1.3.3"
-    }
+  "name": "ts-assessment",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "mocha --config .mocharc.yaml",
+    "test:watch": " mocha --config .mocharc.yaml --watch --watch-files src/**/*.ts,test/*.ts"
+  },
+  "engines": {
+    "npm": ">=9.8.1",
+    "node": ">=18.18.2"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^14.14.37",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "chai": "^4.3.4",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "mocha": "^10.2.0",
+    "prettier": "^3.2.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "yup": "^1.3.3"
+  }
 }
